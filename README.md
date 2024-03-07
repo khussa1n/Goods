@@ -6,9 +6,7 @@ By Khussain Kudaibergenov | Хусаин Кудайбергенов
 
 1. Make sure you have Docker and Docker Compose installed on your system.
 
-2. Clone this repository:
-   ```bash
-   git clone https://github.com/yourusername/goods-app.git
+2. Clone this repository
 
 3. Run
     ```bash
