@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  postgres:
+    restart: always
+    image: postgres:latest
+#    volumes:
+#      - ./.database/postgres/data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: test
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5437:5432"
+
+  redis:
+    restart: always
+    image: redis:latest
+    ports:
+      - "6380:6379"
+
+  clickhouse:
+    image: yandex/clickhouse-server
+    environment:
+      CLICKHOUSE_DB: test
+      CLICKHOUSE_USER: clickhouse
+      CLICKHOUSE_PASSWORD: clickhouse
+    ports:
+      - "8123:9000"
+
+  nats:
+    image: nats:latest
+    ports:
+      - "4223:4222"
+
+  app-sender:
+    build: ./app_sender
+    command: sh -c 'while ! nc -z postgres 5432 && ! nc -z redis 6379; do sleep 1; done && ./sender'
+    ports:
+      - "8081:8080"
+    depends_on:
+      - postgres
+      - redis
+      - nats
+
+  app-receiver:
+    build: ./app_receiver
+    command: sh -c 'while ! nc -z clickhouse 9000; do sleep 1; done && ./receiver'
+    ports:
+      - "8082:8082"
+    depends_on:
+      - clickhouse
+      - nats

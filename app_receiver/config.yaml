@@ -1,0 +1,11 @@
+nats:
+  host: "nats"
+  topic: "clickhouse"
+
+clickhouse:
+  host: 'clickhouse'
+  port: '9000'
+  db_name: 'test'
+  username: 'clickhouse'
+  password: 'clickhouse'
+  migration_path: 'migrations'
