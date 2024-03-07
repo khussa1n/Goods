@@ -27,6 +27,9 @@ This repository contains a Docker Compose setup for the Goods application, which
 ### ClickHouse
 - DB for data logs
 - Port: 9001 (host) mapped to 9000 (container)
+- For connecting
+   ```bash
+  clickhouse-client --host localhost --port 9001 --user clickhouse --password clickhouse
 
 ### NATS
 - Message broker between Gin server and ClickHouse
