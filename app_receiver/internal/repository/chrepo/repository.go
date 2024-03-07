@@ -2,9 +2,12 @@ package chrepo
 
 import (
 	"context"
+	"fmt"
 	"github.com/ClickHouse/clickhouse-go/v2/lib/driver"
 	"github.com/khussa1n/Goods/app_receiver/internal/entity"
+	"io"
 	"log"
+	"os"
 )
 
 type Repo interface {
@@ -22,21 +25,19 @@ func New(db driver.Conn) *ClickhouseRepo {
 	}
 }
 
-func (c *ClickhouseRepo) Migration() error {
-	migrationQuery := `
-		CREATE TABLE IF NOT EXISTS goods (
-			Id Int64,
-			ProjectId Int64,
-			Name String,
-			Description String,
-			Priority Int64,
-			Removed UInt8,
-			EventTime DateTime
-		) ENGINE = MergeTree()
-		ORDER BY (Id);
-			`
+func (c *ClickhouseRepo) Migration(path string) error {
+	file, err := os.Open(path)
+	if err != nil {
+		return fmt.Errorf("failed to open SQL file: %v", err)
+	}
+	defer file.Close()
 
-	err := c.DB.Exec(context.Background(), migrationQuery)
+	migrationContent, err := io.ReadAll(file)
+	if err != nil {
+		return fmt.Errorf("failed to read SQL file: %v", err)
+	}
+
+	err = c.DB.Exec(context.Background(), string(migrationContent))
 	if err != nil {
 		return err
 	}

@@ -34,7 +34,7 @@ func Run(cfg *config.Config) error {
 
 	chrepo := chrepo.New(db.Conn)
 
-	err = chrepo.Migration()
+	err = chrepo.Migration(cfg.Clickhouse.MigrationPath)
 	if err != nil {
 		log.Fatalf("Migration failed: %v", err)
 	}

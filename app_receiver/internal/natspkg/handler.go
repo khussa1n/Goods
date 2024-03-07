@@ -6,6 +6,7 @@ import (
 	"github.com/khussa1n/Goods/app_receiver/internal/repository/chrepo"
 	"github.com/nats-io/nats.go"
 	"log"
+	"time"
 )
 
 type NatsHandler struct {
@@ -29,7 +30,7 @@ func (nh *NatsHandler) HandleMessage(msg *nats.Msg) {
 		Description: receivedData.Description,
 		Priority:    receivedData.Priority,
 		Removed:     receivedData.Removed,
-		EventTime:   receivedData.CreatedAt,
+		EventTime:   time.Now(),
 	}
 
 	err = nh.Chrepo.Insert(goods)
