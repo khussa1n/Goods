@@ -38,7 +38,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/entity.Goods"
+                            "$ref": "#/definitions/api.GoodsReq"
                         }
                     },
                     {
@@ -191,7 +191,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/entity.Goods"
+                            "$ref": "#/definitions/api.GoodsReq"
                         }
                     },
                     {
@@ -295,7 +295,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/entity.Goods"
+                            "$ref": "#/definitions/api.ProjectsReq"
                         }
                     }
                 ],
@@ -376,6 +376,15 @@ const docTemplate = `{
                 ],
                 "summary": "Update project",
                 "parameters": [
+                    {
+                        "description": "req body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.ProjectsReq"
+                        }
+                    },
                     {
                         "type": "integer",
                         "description": "ID of the project",
@@ -484,6 +493,21 @@ const docTemplate = `{
                 }
             }
         },
+        "api.GoodsReq": {
+            "type": "object",
+            "required": [
+                "description",
+                "name"
+            ],
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
         "api.MetaGoods": {
             "type": "object",
             "properties": {
@@ -548,6 +572,17 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/entity.Projects"
                     }
+                }
+            }
+        },
+        "api.ProjectsReq": {
+            "type": "object",
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string"
                 }
             }
         },

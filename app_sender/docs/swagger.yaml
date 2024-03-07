@@ -16,6 +16,16 @@ definitions:
       meta:
         $ref: '#/definitions/api.MetaGoods'
     type: object
+  api.GoodsReq:
+    properties:
+      description:
+        type: string
+      name:
+        type: string
+    required:
+    - description
+    - name
+    type: object
   api.MetaGoods:
     properties:
       limit:
@@ -58,6 +68,13 @@ definitions:
         items:
           $ref: '#/definitions/entity.Projects'
         type: array
+    type: object
+  api.ProjectsReq:
+    properties:
+      name:
+        type: string
+    required:
+    - name
     type: object
   api.RemoveGoods:
     properties:
@@ -117,7 +134,7 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/entity.Goods'
+          $ref: '#/definitions/api.GoodsReq'
       - description: ID of the project associated with the good
         in: path
         name: projectId
@@ -218,7 +235,7 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/entity.Goods'
+          $ref: '#/definitions/api.GoodsReq'
       - description: ID of the good
         in: path
         name: id
@@ -287,7 +304,7 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/entity.Goods'
+          $ref: '#/definitions/api.ProjectsReq'
       produces:
       - application/json
       responses:
@@ -339,6 +356,12 @@ paths:
       - application/json
       description: Update project
       parameters:
+      - description: req body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/api.ProjectsReq'
       - description: ID of the project
         in: path
         name: id

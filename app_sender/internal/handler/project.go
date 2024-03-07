@@ -16,13 +16,13 @@ import (
 // @Tags         project
 // @Accept       json
 // @Produce      json
-// @Param request body entity.Goods true "req body"
+// @Param request body api.ProjectsReq true "req body"
 // @Success      201  {object}  entity.Projects
 // @Failure      400  {object}  api.Error
 // @Failure      500  {object}  api.Error
 // @Router       /project/create [post]
 func (h *Handler) createProject(ctx *gin.Context) {
-	var req entity.Projects
+	var req api.ProjectsReq
 	err := ctx.ShouldBindJSON(&req)
 	if err != nil {
 		log.Printf("bind json err: %s \n", err.Error())
@@ -30,7 +30,10 @@ func (h *Handler) createProject(ctx *gin.Context) {
 		return
 	}
 
-	project, err := h.srvs.CreateProject(ctx, &req)
+	project := new(entity.Projects)
+	project.Name = req.Name
+
+	project, err = h.srvs.CreateProject(ctx, project)
 	if err != nil {
 		log.Printf("can not create project: %s \n", err.Error())
 		ctx.AbortWithStatusJSON(http.StatusInternalServerError, api.Error{Code: 2, Message: err.Error()})
@@ -118,6 +121,7 @@ func (h *Handler) deleteProjectByID(ctx *gin.Context) {
 // @Tags         project
 // @Accept       json
 // @Produce      json
+// @Param request body api.ProjectsReq true "req body"
 // @Param id path int true "ID of the project"
 // @Success      200  {object}  entity.Projects
 // @Failure      400  {object}  api.Error
@@ -138,7 +142,7 @@ func (h *Handler) updateProjectByID(ctx *gin.Context) {
 		return
 	}
 
-	var req entity.Projects
+	var req api.ProjectsReq
 	err = ctx.ShouldBindJSON(&req)
 	if err != nil {
 		log.Printf("bind json err: %s \n", err.Error())
@@ -146,7 +150,7 @@ func (h *Handler) updateProjectByID(ctx *gin.Context) {
 		return
 	}
 
-	project, err := h.srvs.UpdateProjectByID(ctx, int64(id), req.Name)
+	project, err := h.srvs.UpdateProjectByID(ctx, id, req.Name)
 	if err != nil {
 		log.Printf("can not update Project where id = %d: %w", id, err)
 		switch err {

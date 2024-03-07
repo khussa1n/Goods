@@ -16,7 +16,7 @@ import (
 // @Tags         good
 // @Accept       json
 // @Produce      json
-// @Param request body entity.Goods true "req body"
+// @Param request body api.GoodsReq true "req body"
 // @Param projectId path int true "ID of the project associated with the good"
 // @Success      201  {object}  entity.Goods
 // @Failure      400  {object}  api.Error
@@ -29,7 +29,7 @@ func (h *Handler) createGood(ctx *gin.Context) {
 		return
 	}
 
-	var req entity.Goods
+	var req api.GoodsReq
 	err := ctx.ShouldBindJSON(&req)
 	if err != nil {
 		log.Printf("bind json err: %s \n", err.Error())
@@ -37,16 +37,20 @@ func (h *Handler) createGood(ctx *gin.Context) {
 		return
 	}
 
-	req.ProjectID = projectId
+	good := new(entity.Goods)
 
-	goods, err := h.srvs.CreateGood(ctx, &req)
+	good.ProjectID = projectId
+	good.Name = req.Name
+	good.Description = req.Description
+
+	good, err = h.srvs.CreateGood(ctx, good)
 	if err != nil {
 		log.Printf("can not create project: %s \n", err.Error())
 		ctx.AbortWithStatusJSON(http.StatusInternalServerError, api.Error{Code: 2, Message: err.Error()})
 		return
 	}
 
-	ctx.JSON(http.StatusCreated, goods)
+	ctx.JSON(http.StatusCreated, good)
 }
 
 // getAllGoods 	Get all good
@@ -127,7 +131,7 @@ func (h *Handler) deleteGoodByID(ctx *gin.Context) {
 // @Tags         good
 // @Accept       json
 // @Produce      json
-// @Param request body entity.Goods true "req body"
+// @Param request body api.GoodsReq true "req body"
 // @Param id path int true "ID of the good"
 // @Success      201  {object}  entity.Goods
 // @Failure      400  {object}  api.Error
@@ -148,7 +152,7 @@ func (h *Handler) updateGoodByID(ctx *gin.Context) {
 		return
 	}
 
-	var req entity.Goods
+	var req api.GoodsReq
 	err = ctx.ShouldBindJSON(&req)
 	if err != nil {
 		log.Printf("bind json err: %s \n", err.Error())
@@ -156,9 +160,13 @@ func (h *Handler) updateGoodByID(ctx *gin.Context) {
 		return
 	}
 
-	req.ID = id
+	good := new(entity.Goods)
 
-	goods, err := h.srvs.UpdateGoodByID(ctx, id, &req)
+	good.ProjectID = id
+	good.Name = req.Name
+	good.Description = req.Description
+
+	good, err = h.srvs.UpdateGoodByID(ctx, id, good)
 	if err != nil {
 		log.Printf("can not update Project where id = %d: %w", id, err)
 		switch err {
@@ -171,7 +179,7 @@ func (h *Handler) updateGoodByID(ctx *gin.Context) {
 		}
 	}
 
-	ctx.JSON(http.StatusOK, goods)
+	ctx.JSON(http.StatusOK, good)
 }
 
 // reprioritiize 	Reprioritize good
