@@ -1,7 +1,7 @@
 package api
 
 import (
-	entity2 "github.com/khussa1n/Goods/app_sender/internal/entity"
+	"github.com/khussa1n/Goods/app_sender/internal/entity"
 )
 
 type MetaGoods struct {
@@ -18,13 +18,13 @@ type MetaProjects struct {
 }
 
 type GoodsList struct {
-	Meta  MetaGoods       `json:"meta"`
-	Goods []entity2.Goods `json:"goods"`
+	Meta  MetaGoods      `json:"meta"`
+	Goods []entity.Goods `json:"goods"`
 }
 
 type ProjectsList struct {
-	Meta     MetaProjects       `json:"meta"`
-	Projects []entity2.Projects `json:"projects"`
+	Meta     MetaProjects      `json:"meta"`
+	Projects []entity.Projects `json:"projects"`
 }
 
 type Priorities struct {

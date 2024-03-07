@@ -10,6 +10,18 @@ import (
 	"strconv"
 )
 
+// createGood 	Create new good
+// @Summary      Create good
+// @Description  Create new good
+// @Tags         good
+// @Accept       json
+// @Produce      json
+// @Param request body entity.Goods true "req body"
+// @Param projectId path int true "ID of the project associated with the good"
+// @Success      201  {object}  entity.Goods
+// @Failure      400  {object}  api.Error
+// @Failure      500  {object}  api.Error
+// @Router       /good/create [post]
 func (h *Handler) createGood(ctx *gin.Context) {
 	projectId, _ := strconv.ParseInt(ctx.DefaultQuery("projectId", "0"), 10, 64)
 	if projectId == 0 {
@@ -37,6 +49,18 @@ func (h *Handler) createGood(ctx *gin.Context) {
 	ctx.JSON(http.StatusCreated, goods)
 }
 
+// getAllGoods 	Get all good
+// @Summary      Get all good
+// @Description  Create new good
+// @Tags         good
+// @Accept       json
+// @Produce      json
+// @Param limit path int true "limit of the goods list"
+// @Param offset path int true "offset of the goods list"
+// @Success      200  {object}  api.GoodsList
+// @Failure      400  {object}  api.Error
+// @Failure      500  {object}  api.Error
+// @Router       /goods/list [get]
 func (h *Handler) getAllGoods(ctx *gin.Context) {
 	limit, err := strconv.ParseInt(ctx.DefaultQuery("limit", "10"), 10, 64)
 	offset, err := strconv.ParseInt(ctx.DefaultQuery("offset", "0"), 10, 64)
@@ -55,6 +79,17 @@ func (h *Handler) getAllGoods(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, goodsList)
 }
 
+// deleteGoodByID 	Delete good
+// @Summary      Delete good
+// @Description  Delete good
+// @Tags         good
+// @Accept       json
+// @Produce      json
+// @Param id path int true "ID of the good"
+// @Success      200  {object}  api.RemoveGoods
+// @Failure      400  {object}  api.Error
+// @Failure      500  {object}  api.Error
+// @Router       /good/delete [delete]
 func (h *Handler) deleteGoodByID(ctx *gin.Context) {
 	idParam := ctx.Query("id")
 	if idParam == "" {
@@ -86,6 +121,18 @@ func (h *Handler) deleteGoodByID(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, api.RemoveGoods{Id: id, Removed: true})
 }
 
+// updateGoodByID 	Update good
+// @Summary      Update good
+// @Description  Update good
+// @Tags         good
+// @Accept       json
+// @Produce      json
+// @Param request body entity.Goods true "req body"
+// @Param id path int true "ID of the good"
+// @Success      201  {object}  entity.Goods
+// @Failure      400  {object}  api.Error
+// @Failure      500  {object}  api.Error
+// @Router       /good/update [patch]
 func (h *Handler) updateGoodByID(ctx *gin.Context) {
 	idParam := ctx.Query("id")
 	if idParam == "" {
@@ -127,6 +174,18 @@ func (h *Handler) updateGoodByID(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, goods)
 }
 
+// reprioritiize 	Reprioritize good
+// @Summary      Reprioritize good
+// @Description  Reprioritize good
+// @Tags         good
+// @Accept       json
+// @Produce      json
+// @Param request body api.PayloadNewPriority true "req body"
+// @Param id path int true "ID of the good"
+// @Success      200  {object}  []api.Priorities
+// @Failure      400  {object}  api.Error
+// @Failure      500  {object}  api.Error
+// @Router       /good/reprioritiize [patch]
 func (h *Handler) reprioritiize(ctx *gin.Context) {
 	idParam := ctx.Query("id")
 	if idParam == "" {

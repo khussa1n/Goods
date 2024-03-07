@@ -1,11 +1,18 @@
 package handler
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/gin-gonic/gin"
+	_ "github.com/khussa1n/Goods/app_sender/docs"
+	"github.com/swaggo/files"
+	"github.com/swaggo/gin-swagger"
+)
 
 func (h *Handler) InitRouter() *gin.Engine {
 	router := gin.Default()
 
-	project := router.Group("/projects")
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+
+	project := router.Group("/project")
 	project.POST("/create", h.createProject)
 	project.PATCH("/update", h.updateProjectByID)
 	project.DELETE("/remove", h.deleteProjectByID)

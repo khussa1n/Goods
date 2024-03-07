@@ -5,6 +5,15 @@ import (
 	"github.com/khussa1n/Goods/app_sender/internal/config"
 )
 
+// @title           Goods
+// @version         0.0.1
+// @description     API for Goods application.
+
+// @contact.name   Khussain
+// @contact.email  khussain.qudaibergenov@gmail.com
+
+// @host      localhost:8081
+// @BasePath  /
 func main() {
 	// Инициализация кофигурации
 	cfg, err := config.InitConfig("config.yaml")

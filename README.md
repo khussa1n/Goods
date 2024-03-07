@@ -14,6 +14,11 @@ By Khussain Kudaibergenov | Хусаин Кудайбергенов
 
 This repository contains a Docker Compose setup for the Goods application, which consists of several services: PostgreSQL, Redis, ClickHouse, NATS, Gin server, and Golang Server which connected to clickhouse.
 
+## Swagger Documantation
+```
+http://localhost:8081/swagger/index.html
+``` 
+
 ## Services
 
 ### PostgreSQL

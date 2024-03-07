@@ -1,0 +1,392 @@
+basePath: /
+definitions:
+  api.Error:
+    properties:
+      code:
+        type: integer
+      message:
+        type: string
+    type: object
+  api.GoodsList:
+    properties:
+      goods:
+        items:
+          $ref: '#/definitions/entity.Goods'
+        type: array
+      meta:
+        $ref: '#/definitions/api.MetaGoods'
+    type: object
+  api.MetaGoods:
+    properties:
+      limit:
+        type: integer
+      offset:
+        type: integer
+      removed:
+        type: integer
+      total:
+        type: integer
+    type: object
+  api.MetaProjects:
+    properties:
+      limit:
+        type: integer
+      offset:
+        type: integer
+      total:
+        type: integer
+    type: object
+  api.Priorities:
+    properties:
+      id:
+        type: integer
+      priotiry:
+        type: integer
+    type: object
+  api.ProjectsList:
+    properties:
+      meta:
+        $ref: '#/definitions/api.MetaProjects'
+      projects:
+        items:
+          $ref: '#/definitions/entity.Projects'
+        type: array
+    type: object
+  api.RemoveGoods:
+    properties:
+      id:
+        type: integer
+      removed:
+        type: boolean
+    type: object
+  entity.Goods:
+    properties:
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      priority:
+        type: integer
+      project_id:
+        type: integer
+      removed:
+        type: boolean
+    required:
+    - description
+    - name
+    type: object
+  entity.Projects:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+    required:
+    - name
+    type: object
+host: localhost:8081
+info:
+  contact:
+    email: khussain.qudaibergenov@gmail.com
+    name: Khussain
+  description: API for Goods application.
+  title: Goods
+  version: 0.0.1
+paths:
+  /good/create:
+    post:
+      consumes:
+      - application/json
+      description: Create new good
+      parameters:
+      - description: req body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/entity.Goods'
+      - description: ID of the project associated with the good
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/entity.Goods'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.Error'
+      summary: Create good
+      tags:
+      - good
+  /good/delete:
+    delete:
+      consumes:
+      - application/json
+      description: Delete good
+      parameters:
+      - description: ID of the good
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.RemoveGoods'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.Error'
+      summary: Delete good
+      tags:
+      - good
+  /good/reprioritiize:
+    patch:
+      consumes:
+      - application/json
+      description: Reprioritize good
+      parameters:
+      - description: req body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/entity.Goods'
+      - description: ID of the good
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/api.Priorities'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.Error'
+      summary: Reprioritize good
+      tags:
+      - good
+  /good/update:
+    patch:
+      consumes:
+      - application/json
+      description: Update good
+      parameters:
+      - description: req body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/entity.Goods'
+      - description: ID of the good
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/entity.Goods'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.Error'
+      summary: Update good
+      tags:
+      - good
+  /goods/list:
+    get:
+      consumes:
+      - application/json
+      description: Create new good
+      parameters:
+      - description: limit of the goods list
+        in: path
+        name: limit
+        required: true
+        type: integer
+      - description: offset of the goods list
+        in: path
+        name: offset
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.GoodsList'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.Error'
+      summary: Get all good
+      tags:
+      - good
+  /project/create:
+    post:
+      consumes:
+      - application/json
+      description: Create new project
+      parameters:
+      - description: req body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/entity.Goods'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/entity.Projects'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.Error'
+      summary: Create project
+      tags:
+      - project
+  /project/delete:
+    delete:
+      consumes:
+      - application/json
+      description: Delete project
+      parameters:
+      - description: ID of the project
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.Error'
+      summary: Delete project
+      tags:
+      - project
+  /project/update:
+    patch:
+      consumes:
+      - application/json
+      description: Update project
+      parameters:
+      - description: ID of the project
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.Projects'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.Error'
+      summary: Update project
+      tags:
+      - project
+  /projects/list:
+    get:
+      consumes:
+      - application/json
+      description: Create new good
+      parameters:
+      - description: limit of the projects list
+        in: path
+        name: limit
+        required: true
+        type: integer
+      - description: offset of the projects list
+        in: path
+        name: offset
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.ProjectsList'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.Error'
+      summary: Get all good
+      tags:
+      - project
+swagger: "2.0"
