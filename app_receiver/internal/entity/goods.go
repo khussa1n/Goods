@@ -13,11 +13,11 @@ type GoodsResponce struct {
 }
 
 type Goods struct {
-	ID          int64     `db:"id"`
-	ProjectID   int64     `db:"project_id"`
-	Name        string    `db:"name"`
-	Description string    `db:"description"`
-	Priority    int64     `db:"priority"`
-	Removed     bool      `db:"removed"`
-	EventTime   time.Time `db:"created_at"`
+	ID          int64     `db:"Id"`
+	ProjectID   int64     `db:"ProjectID"`
+	Name        string    `db:"Name"`
+	Description string    `db:"Description"`
+	Priority    int64     `db:"Priority"`
+	Removed     bool      `db:"Removed"`
+	EventTime   time.Time `db:"EventTime"`
 }
