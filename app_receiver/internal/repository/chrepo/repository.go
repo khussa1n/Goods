@@ -4,10 +4,12 @@ import (
 	"context"
 	"github.com/ClickHouse/clickhouse-go/v2/lib/driver"
 	"github.com/khussa1n/Goods/app_receiver/internal/entity"
+	"log"
 )
 
 type Repo interface {
 	Insert(receivedData *entity.Goods) error
+	Migration() error
 }
 
 type ClickhouseRepo struct {
@@ -20,9 +22,30 @@ func New(db driver.Conn) *ClickhouseRepo {
 	}
 }
 
+func (c *ClickhouseRepo) Migration() error {
+	migrationQuery := `
+		CREATE TABLE IF NOT EXISTS goods (
+			Id Int64,
+			ProjectId Int64,
+			Name String,
+			Description String,
+			Priority Int64,
+			Removed UInt8,
+			EventTime DateTime
+		) ENGINE = MergeTree()
+		ORDER BY (Id);
+			`
+
+	err := c.DB.Exec(context.Background(), migrationQuery)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func (c *ClickhouseRepo) Insert(goods *entity.Goods) error {
 	query := `
-		INSERT INTO goods (id, project_id, name, description, priority, removed, created_at)
+		INSERT INTO goods (Id, ProjectId, Name, Description, Priority, Removed, EventTime)
 		VALUES (?, ?, ?, ?, ?, ?, ?)
 	`
 
@@ -36,10 +59,12 @@ func (c *ClickhouseRepo) Insert(goods *entity.Goods) error {
 		goods.EventTime,
 	}
 
-	_, err := c.DB.Query(context.Background(), query, args...)
+	err := c.DB.Exec(context.Background(), query, args...)
 	if err != nil {
 		return err
 	}
+
+	log.Println("Inserted successfully data: ", goods)
 
 	return nil
 }

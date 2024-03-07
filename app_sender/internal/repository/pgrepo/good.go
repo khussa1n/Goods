@@ -44,6 +44,8 @@ func (postgres *Postgres) CreateGood(ctx context.Context, g *entity.Goods) (*ent
 		return nil, err
 	}
 
+	log.Printf("Created new good with ID %d\n", goods.ID)
+
 	return goods, nil
 }
 
@@ -74,6 +76,8 @@ func (postgres *Postgres) GetAllGoods(ctx context.Context, limit int64, offset i
 	if err != nil {
 		return 0, 0, nil, err
 	}
+
+	log.Printf("Retrieved %d goods from the database\n", len(goods))
 
 	return total, removed, goods, nil
 }
@@ -108,6 +112,8 @@ func (postgres *Postgres) DeleteGoodByID(ctx context.Context, id int64) (*entity
 		return nil, err
 	}
 
+	log.Printf("Deleted good with ID %d\n", id)
+
 	return good, nil
 }
 
@@ -140,6 +146,8 @@ func (postgres *Postgres) UpdateGoodByID(ctx context.Context, id int64, g *entit
 	if err != nil {
 		return nil, err
 	}
+
+	log.Printf("Updated good with ID %d\n", id)
 
 	return goods, nil
 }
@@ -195,6 +203,8 @@ func (postgres *Postgres) Reprioritiize(ctx context.Context, id int64, priority 
 	if err != nil {
 		return nil, err
 	}
+
+	log.Printf("Reprioritized goods starting from ID %d with new priority %d\n", id, priority)
 
 	return updatedPriorities, nil
 }

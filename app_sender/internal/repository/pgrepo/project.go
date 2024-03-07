@@ -7,6 +7,7 @@ import (
 	"github.com/jackc/pgx/v4"
 	"github.com/khussa1n/Goods/app_sender/internal/custom_error"
 	"github.com/khussa1n/Goods/app_sender/internal/entity"
+	"log"
 )
 
 func (postgres *Postgres) CreateProject(ctx context.Context, p *entity.Projects) (*entity.Projects, error) {
@@ -25,6 +26,8 @@ func (postgres *Postgres) CreateProject(ctx context.Context, p *entity.Projects)
 	if err != nil {
 		return nil, err
 	}
+
+	log.Printf("Created new good with ID %d\n", project.ID)
 
 	return project, nil
 }
@@ -53,6 +56,8 @@ func (postgres *Postgres) GetAllProjects(ctx context.Context, limit int64, offse
 		return 0, nil, err
 	}
 
+	log.Printf("Retrieved %d projects from the database\n", len(projects))
+
 	return total, projects, nil
 
 }
@@ -79,6 +84,8 @@ func (postgres *Postgres) DeleteProjectByID(ctx context.Context, id int64) error
 	if err != nil {
 		return err
 	}
+
+	log.Printf("Deleted project with ID %d\n", id)
 
 	return nil
 }
@@ -107,6 +114,8 @@ func (postgres *Postgres) UpdateProjectByID(ctx context.Context, id int64, name 
 	if err != nil {
 		return nil, err
 	}
+
+	log.Printf("Updated project with ID %d\n", id)
 
 	return project, nil
 }

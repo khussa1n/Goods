@@ -1,7 +1,6 @@
 package app
 
 import (
-	"context"
 	"github.com/khussa1n/Goods/app_receiver/internal/config"
 	"github.com/khussa1n/Goods/app_receiver/internal/natspkg"
 	"github.com/khussa1n/Goods/app_receiver/internal/repository/chrepo"
@@ -25,25 +24,6 @@ func Run(cfg *config.Config) error {
 	}
 	log.Printf("connection to clickhouse success")
 
-	migrationQuery := `
-		CREATE TABLE IF NOT EXISTS goods (
-			Id Int64,
-			ProjectId Int64,
-			Name String,
-			Description String,
-			Priority Int64,
-			Removed UInt8,
-			EventTime DateTime
-		) ENGINE = MergeTree()
-		ORDER BY (Id);
-			`
-
-	err = db.Conn.Exec(context.Background(), migrationQuery)
-	if err != nil {
-		log.Fatalf("Migration failed: %v", err)
-	}
-	log.Println("Migration completed successfully")
-
 	nats := natspkg.New(cfg.Nats.Host, cfg.Nats.Topic)
 	natsConn, err := nats.Connect()
 	if err != nil {
@@ -54,6 +34,12 @@ func Run(cfg *config.Config) error {
 
 	chrepo := chrepo.New(db.Conn)
 
+	err = chrepo.Migration()
+	if err != nil {
+		log.Fatalf("Migration failed: %v", err)
+	}
+	log.Println("Migration completed successfully")
+
 	natsHandler := &natspkg.NatsHandler{
 		Chrepo: chrepo,
 	}
@@ -61,12 +47,13 @@ func Run(cfg *config.Config) error {
 	// Подписка на тему NATS и установка обработчика
 	sub, err := natsConn.Subscribe(nats.Topic, natsHandler.HandleMessage)
 	if err != nil {
-		log.Fatal("Error subscribing to NATS:", err)
+		log.Fatal("Error subscribing to NATS: ", err)
 		return err
 	}
+	log.Printf("Subscribed to NATS topic successfully")
 	defer sub.Unsubscribe()
 
-	log.Println("server started")
+	log.Println("Server started")
 
 	// Создание канала для сигналов
 	interrupt := make(chan os.Signal, 1)

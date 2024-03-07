@@ -13,6 +13,8 @@ type NatsHandler struct {
 }
 
 func (nh *NatsHandler) HandleMessage(msg *nats.Msg) {
+	log.Printf("Processed message: %s", msg.Data)
+
 	var receivedData entity.GoodsResponce
 	err := json.Unmarshal(msg.Data, &receivedData)
 	if err != nil {
