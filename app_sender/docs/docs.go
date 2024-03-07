@@ -135,7 +135,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/entity.Goods"
+                            "$ref": "#/definitions/api.PayloadNewPriority"
                         }
                     },
                     {
@@ -511,6 +511,17 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "total": {
+                    "type": "integer"
+                }
+            }
+        },
+        "api.PayloadNewPriority": {
+            "type": "object",
+            "required": [
+                "newPriority"
+            ],
+            "properties": {
+                "newPriority": {
                     "type": "integer"
                 }
             }

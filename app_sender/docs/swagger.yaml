@@ -36,6 +36,13 @@ definitions:
       total:
         type: integer
     type: object
+  api.PayloadNewPriority:
+    properties:
+      newPriority:
+        type: integer
+    required:
+    - newPriority
+    type: object
   api.Priorities:
     properties:
       id:
@@ -174,7 +181,7 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/entity.Goods'
+          $ref: '#/definitions/api.PayloadNewPriority'
       - description: ID of the good
         in: path
         name: id
