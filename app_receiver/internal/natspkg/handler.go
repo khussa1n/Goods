@@ -10,8 +10,11 @@ import (
 )
 
 type NatsHandler struct {
-	Chrepo *chrepo.ClickhouseRepo
+	Chrepo    *chrepo.ClickhouseRepo
+	BatchSize int
 }
+
+var messageBuffer []entity.Goods
 
 func (nh *NatsHandler) HandleMessage(msg *nats.Msg) {
 	log.Printf("Processed message: %s", msg.Data)
@@ -33,11 +36,27 @@ func (nh *NatsHandler) HandleMessage(msg *nats.Msg) {
 		EventTime:   time.Now(),
 	}
 
-	err = nh.Chrepo.Insert(goods)
+	messageBuffer = append(messageBuffer, *goods)
+
+	if len(messageBuffer) >= nh.BatchSize {
+		nh.insertBatch()
+	}
+}
+
+func (nh *NatsHandler) insertBatch() {
+	if len(messageBuffer) == 0 {
+		return
+	}
+
+	batch := make([]entity.Goods, len(messageBuffer))
+	copy(batch, messageBuffer)
+	messageBuffer = nil
+
+	err := nh.Chrepo.InsertBatch(batch)
 	if err != nil {
 		log.Println("Error inserting data into ClickHouse:", err)
 		return
 	}
 
-	log.Println("Data inserted into ClickHouse:", receivedData)
+	log.Printf("Data batch inserted into ClickHouse: %d", len(batch))
 }

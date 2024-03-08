@@ -10,8 +10,9 @@ type Config struct {
 }
 
 type NatsConfig struct {
-	Host  string `yaml:"host"`
-	Topic string `yaml:"topic"`
+	Host      string `yaml:"host"`
+	Topic     string `yaml:"topic"`
+	BatchSize int    `yaml:"batch_size"`
 }
 
 type ClickhouseConfig struct {

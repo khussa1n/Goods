@@ -41,7 +41,8 @@ func Run(cfg *config.Config) error {
 	log.Println("Migration completed successfully")
 
 	natsHandler := &natspkg.NatsHandler{
-		Chrepo: chrepo,
+		Chrepo:    chrepo,
+		BatchSize: cfg.Nats.BatchSize,
 	}
 
 	// Подписка на тему NATS и установка обработчика

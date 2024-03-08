@@ -8,10 +8,11 @@ import (
 	"io"
 	"log"
 	"os"
+	"strings"
 )
 
 type Repo interface {
-	Insert(receivedData *entity.Goods) error
+	InsertBatch(goodsBatch []entity.Goods) error
 	Migration() error
 }
 
@@ -44,28 +45,38 @@ func (c *ClickhouseRepo) Migration(path string) error {
 	return nil
 }
 
-func (c *ClickhouseRepo) Insert(goods *entity.Goods) error {
+func (c *ClickhouseRepo) InsertBatch(goodsBatch []entity.Goods) error {
 	query := `
 		INSERT INTO goods (Id, ProjectId, Name, Description, Priority, Removed, EventTime)
-		VALUES (?, ?, ?, ?, ?, ?, ?)
-	`
+		VALUES `
 
-	args := []interface{}{
-		goods.ID,
-		goods.ProjectID,
-		goods.Name,
-		goods.Description,
-		goods.Priority,
-		goods.Removed,
-		goods.EventTime,
+	var placeholders string
+	var values []interface{}
+
+	for _, goods := range goodsBatch {
+		placeholders += "(?, ?, ?, ?, ?, ?, ?),"
+
+		values = append(values,
+			goods.ID,
+			goods.ProjectID,
+			goods.Name,
+			goods.Description,
+			goods.Priority,
+			goods.Removed,
+			goods.EventTime,
+		)
 	}
 
-	err := c.DB.Exec(context.Background(), query, args...)
+	placeholders = strings.TrimSuffix(placeholders, ",")
+
+	finalQuery := query + placeholders
+
+	err := c.DB.Exec(context.Background(), finalQuery, values...)
 	if err != nil {
 		return err
 	}
 
-	log.Println("Inserted successfully data: ", goods)
+	log.Printf("Batch inserted successfully, size: %d", len(goodsBatch))
 
 	return nil
 }

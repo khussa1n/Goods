@@ -1,6 +1,7 @@
 nats:
   host: "nats"
   topic: "clickhouse"
+  batch_size: 2
 
 clickhouse:
   host: 'clickhouse'
