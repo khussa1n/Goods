@@ -47,3 +47,4 @@ http://localhost:8081/swagger/index.html
 ### Golang server with ClickHouse
 - Build: ./app_receiver
 - Port: 8082 (host) mapped to 8082 (container)
+- Batch size for inserting to Clickhouse is 2
